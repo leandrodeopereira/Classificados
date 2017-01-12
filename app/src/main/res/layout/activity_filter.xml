@@ -12,4 +12,21 @@
 
     </Spinner>
 
+    <EditText
+        android:id="@+id/et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <!-- se tu tem o id no texto, quando mudar a tela para landscape o texto continua -->
+
+    <Button
+        android:text="@string/show"
+        android:onClick="show"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:text="@string/save"
+        android:onClick="save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>

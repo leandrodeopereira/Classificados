@@ -12,4 +12,6 @@
     <string name="show_toast">Show Toast</string>
     <string name="ok">OK</string>
     <string name="my_msg">My Message</string>
+    <string name="save">Save</string>
+    <string name="show">Show</string>
 </resources>
