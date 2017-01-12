@@ -1,6 +1,8 @@
 package com.pereira.classificados.fragment;
 
+import android.app.Application;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Chronometer;
 
+import com.pereira.classificados.App;
 import com.pereira.classificados.R;
 
 /**
@@ -28,10 +31,22 @@ public class ChronometerFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    private App getApp(){
+        return (App) getActivity().getApplication();
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mChronometer.setBase(getApp().getCurrentTime() + SystemClock.elapsedRealtime());
         mChronometer.start();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        getApp().setCurrentTime(mChronometer.getBase() - SystemClock.elapsedRealtime());
     }
 }
