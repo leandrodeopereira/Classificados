@@ -2,7 +2,11 @@ package com.pereira.classificados.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -55,5 +59,29 @@ public class ListActivity extends BaseActivity {
 
     public void filter(View view) {
         startActivityForResult(new Intent(this, FilterActivity.class), 0);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_list, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.change_view:
+                if (mRvList.getLayoutManager() instanceof GridLayoutManager){
+                    mRvList.setLayoutManager(new LinearLayoutManager(this));
+                } else {
+                    mRvList.setLayoutManager(new GridLayoutManager(this, 2));
+                }
+                // animacao de troca de visualizacao
+                mRvList.getAdapter().notifyItemRangeChanged(0, mRvList.getAdapter().getItemCount());
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
