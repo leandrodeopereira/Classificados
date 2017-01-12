@@ -8,4 +8,8 @@
     <string name="filter_activity_title">Filtro</string>
     <string name="details_activity_title">Detalhes</string>
     <string name="change_view">Alterar Visualização</string>
+    <string name="show_snackbar">Exibir Snackbar</string>
+    <string name="show_toast">Exibir Toast</string>
+    <string name="ok">OK</string>
+    <string name="my_msg">Minha Mensagem</string>
 </resources>

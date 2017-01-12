@@ -9,4 +9,17 @@
         app:showAsAction='ifRoom'
         />
 
+    <item
+        android:id="@+id/action_toast"
+        android:icon="@mipmap/ic_launcher"
+        android:title="@string/show_toast"
+        app:showAsAction='never'
+        />
+
+    <item
+        android:id="@+id/action_snackbar"
+        android:icon="@mipmap/ic_launcher"
+        android:title="@string/show_snackbar"
+        app:showAsAction='never'
+        />
 </menu>
