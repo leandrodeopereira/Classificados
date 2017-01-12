@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+
+import com.pereira.classificados.R;
 
 /**
  * Created by Aluno on 10/01/2017.
@@ -13,6 +16,7 @@ import android.util.Log;
 public class BaseActivity extends AppCompatActivity {
 
     private final String TAG = getClass().getSimpleName();
+    protected Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +30,12 @@ public class BaseActivity extends AppCompatActivity {
 
     protected SharedPreferences getPref(){
         return getPreferences(MODE_PRIVATE);
+    }
+
+    protected void setupToolbar(int title){
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitle(title);
+        setSupportActionBar(mToolbar);
     }
 
     @Override
