@@ -1,12 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
+    <include layout="@layout/chronometer"></include>
+
+
+    <com.pereira.classificados.view.LinearRecyclerView
         android:id="@+id/rv_list"
+        android:background="@android:drawable/dialog_holo_light_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_weight="1"
+        android:layout_height="0dp"/>
+        <!-- android:layout_weight="1", é o peso do bloco -->
+
+    <Button
+        android:onClick="filter"
+        android:text="@string/filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 
 

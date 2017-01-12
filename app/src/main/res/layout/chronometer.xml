@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <fragment
+        tools:layout="@layout/fragment_chronometer"
+        android:name="com.pereira.classificados.fragment.ChronometerFragment"
+        android:id="@+id/chronometer_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+         <!-- tools é apenas para o preview -->
+
+</LinearLayout>
