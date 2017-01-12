@@ -32,6 +32,8 @@ public class ListActivity extends BaseActivity {
 
         setContentView(R.layout.activity_list);
         setupToolbar(R.string.list_activity_title); // settando a toolbar
+        //botao de voltar nao aparecer na tela inicial
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         init();
 
         List<ItemAd> itens = new ArrayList<>();
@@ -81,7 +83,7 @@ public class ListActivity extends BaseActivity {
                 mRvList.getAdapter().notifyItemRangeChanged(0, mRvList.getAdapter().getItemCount());
                 break;
         }
-
+        // retorna para fazer o metodo da BaseActivity
         return super.onOptionsItemSelected(item);
     }
 }

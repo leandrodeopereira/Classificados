@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.pereira.classificados.R;
 
@@ -36,6 +37,17 @@ public class BaseActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle(title);
         setSupportActionBar(mToolbar);
+        //criar o botao de voltar na toolbar(sem a acao)
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    // Acao do botao de voltar
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //nome do botao(id) eh home
+        if(item.getItemId() == android.R.id.home)
+            onBackPressed();
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
