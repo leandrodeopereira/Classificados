@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.pereira.classificados.R;
 
@@ -48,6 +51,18 @@ public class BaseActivity extends AppCompatActivity {
         if(item.getItemId() == android.R.id.home)
             onBackPressed();
         return super.onOptionsItemSelected(item);
+    }
+
+    //Animacao para mostrar lista
+    protected  void replaceView(View oldView, View newView ){
+        Animation animOut = AnimationUtils.loadAnimation(this, android.R.anim.fade_out);
+        Animation animIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
+
+        oldView.setVisibility(View.INVISIBLE);
+        oldView.startAnimation(animOut);
+
+        newView.setVisibility(View.VISIBLE);
+        newView.startAnimation(animIn);
     }
 
     @Override

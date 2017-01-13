@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ public class ListActivity extends BaseActivity {
     private RecyclerView mRvList;
     private ListAdapter mAdapter;
     private List<ItemAd> mItems;
+    private ProgressBar mSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,9 @@ public class ListActivity extends BaseActivity {
         mItems = new ArrayList<>();
         mAdapter = new ListAdapter(this, mItems);
         mRvList.setAdapter(mAdapter);
+
+        mRvList.setVisibility(View.INVISIBLE);
+        mSpinner.setVisibility(View.VISIBLE);
 
         // é necessário criar uma thread nova para carregar os dados do banco por exemplo
         // Thread secundário
@@ -66,8 +71,6 @@ public class ListActivity extends BaseActivity {
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
-
-
     }
 
     private void loadData(){
@@ -80,6 +83,9 @@ public class ListActivity extends BaseActivity {
             @Override
             public void run() {
                 mAdapter.notifyDataSetChanged();
+                replaceView(mSpinner,mRvList);
+//                mSpinner.setVisibility(View.INVISIBLE);
+//                mRvList.setVisibility(View.VISIBLE);
             }
         });
         //falar que os dados foram alterados
@@ -104,6 +110,7 @@ public class ListActivity extends BaseActivity {
 
     private void init() {
         mRvList = (RecyclerView) findViewById(R.id.rv_list);
+        mSpinner = (ProgressBar) findViewById(R.id.spinner);
     }
 
     @Override
