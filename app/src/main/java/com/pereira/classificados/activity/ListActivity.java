@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,6 +35,7 @@ public class ListActivity extends BaseActivity {
     private ListAdapter mAdapter;
     private List<ItemAd> mItems;
     private ProgressBar mSpinner;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +73,35 @@ public class ListActivity extends BaseActivity {
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(2* 1000); // 2 seg
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        mItems.add(0, new ItemAd(null, "Novo Item " +  mItems.size() , "Minha descrição +" +
+                                "do meu item adicionado da minha aplicação"));
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mAdapter.notifyItemRangeChanged(0, mItems.size());
+                                mSwipeRefreshLayout.setRefreshing(false);
+                            }
+                        });
+                    }
+                }).start();
+
+            }
+        });
     }
 
     private void loadData(){
@@ -111,6 +142,7 @@ public class ListActivity extends BaseActivity {
     private void init() {
         mRvList = (RecyclerView) findViewById(R.id.rv_list);
         mSpinner = (ProgressBar) findViewById(R.id.spinner);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefresh);
     }
 
     @Override
