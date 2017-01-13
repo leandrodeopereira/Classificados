@@ -14,4 +14,6 @@
     <string name="my_msg">My Message</string>
     <string name="save">Save</string>
     <string name="show">Show</string>
+    <string name="make_call">Make a Call</string>
+    <string name="open_browser">Open Browser</string>
 </resources>

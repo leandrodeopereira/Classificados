@@ -1,6 +1,7 @@
 package com.pereira.classificados.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -114,6 +115,15 @@ public class ListActivity extends BaseActivity {
                         showDialog();
                     }
                 }).show();
+                break;
+
+            case R.id.action_call:
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:55051980488150"));
+                startActivity(intent);
+                break;
+            case  R.id.action_browser:
+                Intent intent2 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com"));
+                startActivity(intent2);
                 break;
         }
         // retorna para fazer o metodo da BaseActivity
