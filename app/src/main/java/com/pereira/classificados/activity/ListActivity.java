@@ -30,6 +30,8 @@ import java.util.List;
 public class ListActivity extends BaseActivity {
 
     private RecyclerView mRvList;
+    private ListAdapter mAdapter;
+    private List<ItemAd> mItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,15 +41,48 @@ public class ListActivity extends BaseActivity {
         setupToolbar(R.string.list_activity_title); // settando a toolbar
         init();
 
-        List<ItemAd> itens = new ArrayList<>();
+        mItems = new ArrayList<>();
+        mAdapter = new ListAdapter(this, mItems);
+        mRvList.setAdapter(mAdapter);
+
+        // é necessário criar uma thread nova para carregar os dados do banco por exemplo
+        // Thread secundário
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(5 * 1000); // 5 seg (simular busca de banco)
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                //Aqui seria onde colocar algo para pegar dados
+                loadData();
+            }
+        }).start();
+
+        // Thread UI(principal)
+//        try {
+//            Thread.sleep(5 * 1000); // 5 seg (simular busca de banco)
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
+
+    }
+
+    private void loadData(){
         for (int i = 0; i < 50; i++) {
-            itens.add(new ItemAd(null, String.format("Item %s", i), String.format("Descrição do meu item da minha lista "
+            mItems.add(new ItemAd(null, String.format("Item %s", i), String.format("Descrição do meu item da minha lista "
                     + "de Recycleview do Curso Android da PUCRS %s", i)));
         }
-
-        ListAdapter adapter = new ListAdapter(this, itens);
-
-        mRvList.setAdapter(adapter);
+        // Avisar para rodar na thread UI
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+        //falar que os dados foram alterados
     }
 
     @Override
