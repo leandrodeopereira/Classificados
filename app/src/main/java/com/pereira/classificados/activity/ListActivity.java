@@ -87,7 +87,7 @@ public class ListActivity extends BaseActivity {
                             e.printStackTrace();
                         }
 
-                        mItems.add(0, new ItemAd(null, "Novo Item " +  mItems.size() , "Minha descrição +" +
+                        mItems.add(0, new ItemAd(null, "Novo Item " +  (mItems.size()-49) , "Minha descrição" +
                                 "do meu item adicionado da minha aplicação"));
 
                         runOnUiThread(new Runnable() {
