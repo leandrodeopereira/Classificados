@@ -16,4 +16,6 @@
     <string name="show">Show</string>
     <string name="open_browser">Open Browser</string>
     <string name="request_permission">Habilitar permissão de LIGAÇÃO na sua configuração.</string>
+    <string name="request_sms">Solicitar SMS</string>
+    <string name="request_sms_enable">Solicitação de SMS ativada.</string>
 </resources>

@@ -37,6 +37,7 @@ import java.util.List;
 public class ListActivity extends BaseActivity {
 
     private final int REQUEST_PERMISSION_CALL_PHONE = 0;
+    private final int REQUEST_PERMISSION_SMS = 1;
 
     private RecyclerView mRvList;
     private ListAdapter mAdapter;
@@ -202,9 +203,14 @@ public class ListActivity extends BaseActivity {
             case R.id.action_call:
                 makeCall();
                 break;
+
             case  R.id.action_browser:
                 Intent intent2 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com"));
                 startActivity(intent2);
+                break;
+
+           case R.id.action_request_sms:
+                requestSMS();
                 break;
         }
         // retorna para fazer o metodo da BaseActivity
@@ -245,6 +251,27 @@ public class ListActivity extends BaseActivity {
                         makeCall();
                     }
                     break;
+
+                case REQUEST_PERMISSION_SMS:
+                    if(grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                            grantResults[1] == PackageManager.PERMISSION_GRANTED)
+                    Toast.makeText(this, R.string.request_sms_enable, Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    }
+
+    private void requestSMS() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS)
+                == PackageManager.PERMISSION_DENIED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS)
+                == PackageManager.PERMISSION_DENIED ) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_SMS)
+                    && !ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECEIVE_SMS)) {
+                String[] permissions = new String[]{Manifest.permission.READ_SMS, Manifest.permission.RECEIVE_SMS};
+                ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSION_SMS);
+            } else {// se ele jah negou, avisar para ele ativar
+                Toast.makeText(this, R.string.request_permission, Toast.LENGTH_SHORT).show();
             }
         }
     }
