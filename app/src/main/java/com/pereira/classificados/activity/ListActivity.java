@@ -1,9 +1,14 @@
 package com.pereira.classificados.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
@@ -31,11 +36,14 @@ import java.util.List;
 
 public class ListActivity extends BaseActivity {
 
+    private final int REQUEST_PERMISSION_CALL_PHONE = 0;
+
     private RecyclerView mRvList;
     private ListAdapter mAdapter;
     private List<ItemAd> mItems;
     private ProgressBar mSpinner;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,8 +200,7 @@ public class ListActivity extends BaseActivity {
                 break;
 
             case R.id.action_call:
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:55051980488150"));
-                startActivity(intent);
+                makeCall();
                 break;
             case  R.id.action_browser:
                 Intent intent2 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com"));
@@ -204,11 +211,41 @@ public class ListActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // como é uma permicao perigosa, precisa fazer uma verificacao antes
+    private void makeCall(){
+        // se eu tenho a permissao faz a acao
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
+                == PackageManager.PERMISSION_GRANTED)  {
+            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:55051980488150"));
+            startActivity(intent);
+        }else // pedir pro usuario a permissao, se puder pedir, ou seja, ele ainda nao negou
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)){
+                String[]  permissions = new String[] {Manifest.permission.CALL_PHONE};
+                ActivityCompat.requestPermissions(this, permissions ,  REQUEST_PERMISSION_CALL_PHONE );
+        } else {// se ele jah negou, avisar para ele ativar
+                Toast.makeText(this, R.string.request_permission, Toast.LENGTH_SHORT).show();
+            }
+    }
+
     private void showDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.app_name)
                 .setMessage(R.string.my_msg)
                 .setPositiveButton(R.string.ok, null)
                 .show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults.length > 0) {
+            switch (requestCode) {
+                case REQUEST_PERMISSION_CALL_PHONE:
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        makeCall();
+                    }
+                    break;
+            }
+        }
     }
 }

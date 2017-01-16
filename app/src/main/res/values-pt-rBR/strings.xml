@@ -15,4 +15,5 @@
     <string name="save">Save</string>
     <string name="show">Show</string>
     <string name="open_browser">Open Browser</string>
+    <string name="request_permission">Habilitar permissão de LIGAÇÃO na sua configuração.</string>
 </resources>
