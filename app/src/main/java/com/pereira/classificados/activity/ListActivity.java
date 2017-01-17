@@ -1,6 +1,8 @@
 package com.pereira.classificados.activity;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -32,10 +35,12 @@ import com.pereira.classificados.bean.Category;
 import com.pereira.classificados.bean.ItemAd;
 import com.pereira.classificados.adapter.ListAdapter;
 import com.pereira.classificados.R;
+import com.pereira.classificados.reciver.AlarmBroadcastReceiver;
 import com.pereira.classificados.sevice.ToastService;
 import com.pereira.classificados.tasks.LoadDataTask;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -80,8 +85,7 @@ public class ListActivity extends BaseActivity {
                 new AddItemTask().execute("Novo item");
             }
         });
-
-        //
+        createAlarm();
 
     }
 
@@ -230,6 +234,24 @@ public class ListActivity extends BaseActivity {
                 Toast.makeText(this, R.string.request_permission, Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void createAlarm(){
+        // pegar a intancia do alarm
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent intent = new Intent(this, AlarmBroadcastReceiver.class); // nossa intecao
+        intent.putExtra(AlarmBroadcastReceiver.MSG_KEY, "ALERT HOMERIS!!");
+        PendingIntent pendingIntent  = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+//        Apartir de tal hora:
+//        calendar.set(Calendar.DAY_OF_MONTH,17);
+//        calendar.set(Calendar.HOUR_OF_DAY,21);
+//        calendar.set(Calendar.MINUTE ,20);
+        //RTC é o tempo corrente(contador)
+        //ELAPSED usa a hora do android
+        alarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(), 60000, pendingIntent);
     }
 
     class AddItemTask extends AsyncTask<String, Void, Boolean>{
