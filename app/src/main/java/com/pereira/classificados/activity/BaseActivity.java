@@ -1,8 +1,13 @@
 package com.pereira.classificados.activity;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -10,8 +15,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import com.pereira.classificados.R;
+import com.pereira.classificados.sevice.ToastService;
 
 /**
  * Created by Aluno on 10/01/2017.
@@ -21,6 +28,14 @@ public class BaseActivity extends AppCompatActivity {
 
     private final String TAG = getClass().getSimpleName();
     protected Toolbar mToolbar;
+
+    private BroadcastReceiver receiverToast = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context, intent.getStringExtra(ToastService.KEY_MSG),
+                    Toast.LENGTH_SHORT).show();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +92,11 @@ public class BaseActivity extends AppCompatActivity {
         super.onResume();
 
         Log.d(TAG, "onResume");
+
+        // sempre no resume vai registrar o receiver
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                receiverToast, new IntentFilter(ToastService.ACTION_FILTER)
+        );
     }
 
     @Override
@@ -84,6 +104,8 @@ public class BaseActivity extends AppCompatActivity {
         super.onPause();
 
         Log.d(TAG, "onPause");
+        // desregistrar o receiver
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverToast);
     }
 
     @Override

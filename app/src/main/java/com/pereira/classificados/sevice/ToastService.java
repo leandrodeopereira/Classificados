@@ -35,7 +35,7 @@ public class ToastService extends IntentService {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    // nao funciona!!! Toas tem que ser apenas na UI
+                    // nao funciona o que esta em comentario!!! Toas tem que ser apenas na UI
                     //Toast.makeText(ToastService.this, msg, Toast.LENGTH_SHORT).show();
                     Intent intentBrod = new Intent(ACTION_FILTER);
                     intentBrod.putExtra(KEY_MSG, msg);
