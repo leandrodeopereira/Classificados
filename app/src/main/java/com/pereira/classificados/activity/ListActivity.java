@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pereira.classificados.bean.Category;
@@ -50,6 +51,7 @@ public class ListActivity extends BaseActivity {
     private List<ItemAd> mItems;
     private ProgressBar mSpinner;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private TextView mTvProgress;
 
 
     @Override
@@ -67,7 +69,7 @@ public class ListActivity extends BaseActivity {
         mRvList.setVisibility(View.INVISIBLE);
         mSpinner.setVisibility(View.VISIBLE);
 
-        LoadDataTask loadDataTask = new LoadDataTask(mItems, mAdapter,this, mSpinner,mRvList);
+        LoadDataTask loadDataTask = new LoadDataTask(mItems, mAdapter,this, mSpinner,mRvList, mTvProgress);
         loadDataTask.execute();
 
 
@@ -126,6 +128,7 @@ public class ListActivity extends BaseActivity {
         mRvList = (RecyclerView) findViewById(R.id.rv_list);
         mSpinner = (ProgressBar) findViewById(R.id.spinner);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefresh);
+        mTvProgress = (TextView) findViewById(R.id.tv_progress);
     }
 
     @Override

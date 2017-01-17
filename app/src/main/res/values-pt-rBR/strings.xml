@@ -18,4 +18,7 @@
     <string name="request_permission">Habilitar permissão de LIGAÇÃO na sua configuração.</string>
     <string name="request_sms">Solicitar SMS</string>
     <string name="request_sms_enable">Solicitação de SMS ativada.</string>
+    <string name="preparing_data">Preparando dados...</string>
+    <string name="progress_data" formatted="false">Carregando dados %d%%...</string>
+    <!-- formatted="false" quando o %s não é string -->
 </resources>

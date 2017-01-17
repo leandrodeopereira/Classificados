@@ -2,7 +2,9 @@ package com.pereira.classificados.tasks;
 
 import android.os.AsyncTask;
 import android.view.View;
+import android.widget.TextView;
 
+import com.pereira.classificados.R;
 import com.pereira.classificados.activity.BaseActivity;
 import com.pereira.classificados.adapter.ListAdapter;
 import com.pereira.classificados.bean.ItemAd;
@@ -20,13 +22,16 @@ public class LoadDataTask extends AsyncTask<Void, Integer,Boolean > {
     private BaseActivity mContext;
     private View mSpinner;
     private View mRvList;
+    private TextView mTvProgress;
 
-    public LoadDataTask(List<ItemAd> mItems, ListAdapter mAdapter, BaseActivity mContext, View mSpinner, View mRvList) {
+    public LoadDataTask(List<ItemAd> mItems, ListAdapter mAdapter, BaseActivity mContext,
+                        View mSpinner, View mRvList, TextView mTvProgress) {
         this.mItems = mItems;
         this.mAdapter = mAdapter;
         this.mContext = mContext;
         this.mSpinner = mSpinner;
         this.mRvList = mRvList;
+        this.mTvProgress = mTvProgress;
     }
 
     @Override
@@ -39,12 +44,40 @@ public class LoadDataTask extends AsyncTask<Void, Integer,Boolean > {
             return false;
         }
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 1; i < 51; i++) {
+
+            try {
+                Thread.sleep(50); // (simular busca de banco)
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return false;
+            }
+
             mItems.add(new ItemAd(null, String.format("Item %s", i), String.format("Descrição do meu item da minha lista "
                     + "de Recycleview do Curso Android da PUCRS %s", i)));
+
+            int progress = (i * 100) / 50;
+            publishProgress(progress);
+
         }
 
         return true;
+    }
+
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        // Fazer sempre que carregar os dados
+
+        mTvProgress.setText(R.string.preparing_data);
+    }
+
+    @Override
+    protected void onProgressUpdate(Integer... values) {
+        super.onProgressUpdate(values);
+
+        mTvProgress.setText(mContext.getString(R.string.progress_data, values[0]));
     }
 
     @Override
@@ -54,6 +87,7 @@ public class LoadDataTask extends AsyncTask<Void, Integer,Boolean > {
         if(sucess) {
             mAdapter.notifyDataSetChanged();
             mContext.replaceView(mSpinner, mRvList);
+            mContext.hideView(mTvProgress);
         }
     }
 }
