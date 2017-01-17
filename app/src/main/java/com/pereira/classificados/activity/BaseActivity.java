@@ -69,7 +69,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     //Animacao para mostrar lista
-    protected  void replaceView(View oldView, View newView ){
+    public void replaceView(View oldView, View newView ){
         Animation animOut = AnimationUtils.loadAnimation(this, android.R.anim.fade_out);
         Animation animIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
 

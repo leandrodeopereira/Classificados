@@ -31,6 +31,7 @@ import com.pereira.classificados.bean.ItemAd;
 import com.pereira.classificados.adapter.ListAdapter;
 import com.pereira.classificados.R;
 import com.pereira.classificados.sevice.ToastService;
+import com.pereira.classificados.tasks.LoadDataTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,27 +67,9 @@ public class ListActivity extends BaseActivity {
         mRvList.setVisibility(View.INVISIBLE);
         mSpinner.setVisibility(View.VISIBLE);
 
-        // é necessário criar uma thread nova para carregar os dados do banco por exemplo
-        // Thread secundário
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(5 * 1000); // 5 seg (simular busca de banco)
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                //Aqui seria onde colocar algo para pegar dados
-                loadData();
-            }
-        }).start();
+        LoadDataTask loadDataTask = new LoadDataTask(mItems, mAdapter,this, mSpinner,mRvList);
+        loadDataTask.execute();
 
-        // Thread UI(principal)
-//        try {
-//            Thread.sleep(5 * 1000); // 5 seg (simular busca de banco)
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -121,23 +104,6 @@ public class ListActivity extends BaseActivity {
 
     }
 
-    private void loadData(){
-        for (int i = 0; i < 50; i++) {
-            mItems.add(new ItemAd(null, String.format("Item %s", i), String.format("Descrição do meu item da minha lista "
-                    + "de Recycleview do Curso Android da PUCRS %s", i)));
-        }
-        // Avisar para rodar na thread UI
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mAdapter.notifyDataSetChanged();
-                replaceView(mSpinner,mRvList);
-//                mSpinner.setVisibility(View.INVISIBLE);
-//                mRvList.setVisibility(View.VISIBLE);
-            }
-        });
-        //falar que os dados foram alterados
-    }
 
     @Override
     protected void setupToolbar(int title) {
