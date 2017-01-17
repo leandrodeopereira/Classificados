@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * Created by Android on 17/01/2017.
  */
+// Substitui a new thread, é uma maneira mais organizada de chamar novas threads
 //AsyncTask< o q vai receber , valor que vai passar no nosso progresso , o q vai retornar>
 public class LoadDataTask extends AsyncTask<Void, Integer,Boolean > {
 
