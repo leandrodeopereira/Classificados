@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -76,29 +77,7 @@ public class ListActivity extends BaseActivity {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(2* 1000); // 2 seg
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
-                        mItems.add(0, new ItemAd(null, "Novo Item " +  (mItems.size()-49) , "Minha descrição" +
-                                "do meu item adicionado da minha aplicação"));
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mAdapter.notifyItemRangeChanged(0, mItems.size());
-                                mSwipeRefreshLayout.setRefreshing(false);
-                            }
-                        });
-                    }
-                }).start();
-
+                new AddItemTask().execute("Novo item");
             }
         });
 
@@ -249,6 +228,34 @@ public class ListActivity extends BaseActivity {
                 ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSION_SMS);
             } else {// se ele jah negou, avisar para ele ativar
                 Toast.makeText(this, R.string.request_permission, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    class AddItemTask extends AsyncTask<String, Void, Boolean>{
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            try {
+                Thread.sleep(2* 1000); // 2 seg
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return false;
+            }
+
+            String title = strings[0];
+
+            mItems.add(0, new ItemAd(null, title , "Minha descrição" +
+                    "do meu item adicionado da minha aplicação"));
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean sucess) {
+            super.onPostExecute(sucess);
+            if (sucess) {
+                mAdapter.notifyItemRangeChanged(0, mItems.size());
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         }
     }
