@@ -7,6 +7,8 @@ import android.provider.Telephony;
 import android.telephony.SmsMessage;
 import android.widget.Toast;
 
+import com.pereira.classificados.sevice.ToastService;
+
 import java.util.Objects;
 
 /**
@@ -22,6 +24,10 @@ public class SMSBroadcastReciver extends BroadcastReceiver {
 
             Toast.makeText(context, String.format("From: %s \n Msg: %s", sms.getOriginatingAddress(),
                     sms.getDisplayMessageBody()), Toast.LENGTH_SHORT).show();
+
+            Intent intentService = new Intent(context, ToastService.class);
+            intentService.putExtra(ToastService.KEY_MSG, "I'm Running!!!");
+            context.startService(intentService);
         }
     }
 }

@@ -1,7 +1,10 @@
 package com.pereira.classificados.activity;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
@@ -26,6 +30,7 @@ import com.pereira.classificados.bean.Category;
 import com.pereira.classificados.bean.ItemAd;
 import com.pereira.classificados.adapter.ListAdapter;
 import com.pereira.classificados.R;
+import com.pereira.classificados.sevice.ToastService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,6 +116,16 @@ public class ListActivity extends BaseActivity {
 
             }
         });
+
+        //
+        LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String msg = intent.getStringExtra(ToastService.KEY_MSG);
+
+                Toast.makeText(ListActivity.this, msg, Toast.LENGTH_SHORT).show();
+            }
+        }, new IntentFilter(ToastService.ACTION_FILTER));
     }
 
     private void loadData(){
