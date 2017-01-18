@@ -39,7 +39,7 @@ public class LoadDataTask extends AsyncTask<Void, Integer,Boolean > {
     protected Boolean doInBackground(Void... voids) {
         // simulacao de processo de informacao
         try {
-            Thread.sleep(3 * 1000); // 3 seg (simular busca de banco)
+            Thread.sleep(1 * 1000); // 3 seg (simular busca de banco)
         } catch (InterruptedException e) {
             e.printStackTrace();
             return false;
@@ -48,7 +48,7 @@ public class LoadDataTask extends AsyncTask<Void, Integer,Boolean > {
         for (int i = 1; i < 51; i++) {
 
             try {
-                Thread.sleep(50); // (simular busca de banco)
+                Thread.sleep(5); // (simular busca de banco)
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 return false;
