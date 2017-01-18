@@ -1,4 +1,4 @@
-package com.pereira.classificados.bean;
+package com.pereira.classificados.database.model;
 
 import java.io.Serializable;
 

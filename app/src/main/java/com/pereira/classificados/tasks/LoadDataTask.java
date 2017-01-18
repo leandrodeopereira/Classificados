@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.pereira.classificados.R;
 import com.pereira.classificados.activity.BaseActivity;
 import com.pereira.classificados.adapter.ListAdapter;
-import com.pereira.classificados.bean.ItemAd;
+import com.pereira.classificados.database.model.ItemAd;
 
 import java.util.List;
 
@@ -39,16 +39,16 @@ public class LoadDataTask extends AsyncTask<Void, Integer,Boolean > {
     protected Boolean doInBackground(Void... voids) {
         // simulacao de processo de informacao
         try {
-            Thread.sleep(1 * 1000); // 3 seg (simular busca de banco)
+            Thread.sleep(1 * 1000); // 1 seg (simular busca de banco)
         } catch (InterruptedException e) {
             e.printStackTrace();
             return false;
         }
 
-        for (int i = 1; i < 51; i++) {
+        for (int i = 1; i < 2; i++) {
 
             try {
-                Thread.sleep(5); // (simular busca de banco)
+                Thread.sleep(1); // (simular busca de banco)
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 return false;
@@ -88,7 +88,12 @@ public class LoadDataTask extends AsyncTask<Void, Integer,Boolean > {
         if(sucess) {
             mAdapter.notifyDataSetChanged();
             mContext.replaceView(mSpinner, mRvList);
-            mContext.hideView(mTvProgress);
+
+            if (mItems.size() > 0) {
+                mContext.hideView(mTvProgress);
+            } else {
+                mTvProgress.setText(R.string.no_data);
+            }
         }
     }
 }

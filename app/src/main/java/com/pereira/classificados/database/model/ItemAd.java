@@ -1,6 +1,11 @@
-package com.pereira.classificados.bean;
+package com.pereira.classificados.database.model;
+
+import android.app.Activity;
+import android.app.ListActivity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Aluno on 10/01/2017.
@@ -40,5 +45,11 @@ public class ItemAd implements Serializable{
 
     public void setmDescription(String mDescription) {
         this.mDescription = mDescription;
+    }
+
+    public static List<ItemAd> getList(Activity activity){
+        List<ItemAd> items = new ArrayList<>();
+
+        return items;
     }
 }

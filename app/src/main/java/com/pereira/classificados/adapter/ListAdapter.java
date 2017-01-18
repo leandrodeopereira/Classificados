@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pereira.classificados.bean.ItemAd;
+import com.pereira.classificados.database.model.ItemAd;
 import com.pereira.classificados.R;
 import com.pereira.classificados.activity.DetailActivity;
 

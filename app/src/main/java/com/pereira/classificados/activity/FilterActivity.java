@@ -1,18 +1,14 @@
 package com.pereira.classificados.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.pereira.classificados.R;
-import com.pereira.classificados.bean.Category;
+import com.pereira.classificados.database.model.Category;
 
 import java.util.ArrayList;
 import java.util.List;

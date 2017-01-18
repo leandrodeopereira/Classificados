@@ -11,7 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pereira.classificados.R;
-import com.pereira.classificados.bean.ItemAd;
+import com.pereira.classificados.database.model.ItemAd;
 
 /**
  * Created by Aluno on 09/01/2017.
