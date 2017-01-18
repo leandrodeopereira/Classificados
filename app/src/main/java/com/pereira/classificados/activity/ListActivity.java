@@ -254,6 +254,10 @@ public class ListActivity extends BaseActivity {
         alarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(), 60000, pendingIntent);
     }
 
+    public void newItem(View view) {
+        startActivity(new Intent(this, FormItemActivity.class));
+    }
+
     class AddItemTask extends AsyncTask<String, Void, Boolean>{
 
         @Override

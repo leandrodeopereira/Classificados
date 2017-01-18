@@ -21,4 +21,8 @@
     <string name="request_sms_enable">Solicitação de SMS ativada.</string>
     <string name="preparing_data">Preparing data...</string>
     <string name="progress_data" formatted="false">Loading data %d%%...</string>
+    <string name="form_title_activity">New Item</string>
+    <string name="hint_title">Ad\'s title</string>
+    <string name="hint_description">Ad\'s Description</string>
+    <string name="hint_price">$ 0,00</string>
 </resources>
