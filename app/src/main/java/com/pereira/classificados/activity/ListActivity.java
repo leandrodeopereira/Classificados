@@ -61,17 +61,9 @@ public class ListActivity extends BaseActivity {
         setContentView(R.layout.activity_list);
         setupToolbar(R.string.list_activity_title); // settando a toolbar
         init();
-
         mItems = new ArrayList<>();
         mAdapter = new ListAdapter(this, mItems);
         mRvList.setAdapter(mAdapter);
-
-        mRvList.setVisibility(View.INVISIBLE);
-        mSpinner.setVisibility(View.VISIBLE);
-
-        LoadDataTask loadDataTask = new LoadDataTask(mItems, mAdapter,this, mSpinner,mRvList, mTvProgress);
-        loadDataTask.execute();
-
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -81,6 +73,16 @@ public class ListActivity extends BaseActivity {
         });
         createAlarm();
 
+        loadData();
+
+    }
+
+    private void loadData(){
+        mRvList.setVisibility(View.INVISIBLE);
+        mSpinner.setVisibility(View.VISIBLE);
+        mItems.clear();
+        LoadDataTask loadDataTask = new LoadDataTask(mItems, mAdapter,this, mSpinner,mRvList, mTvProgress);
+        loadDataTask.execute();
     }
 
 
@@ -114,6 +116,14 @@ public class ListActivity extends BaseActivity {
 
         Category category = (Category) data.getSerializableExtra(FilterActivity.CATEGORY_KEY);
         Toast.makeText(this, category.getDescription(),Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        // o certo é usar o Load Manager, atualizar o banco de dados -> atualiza a tela
+
+        loadData();
     }
 
     public void filter(View view) {

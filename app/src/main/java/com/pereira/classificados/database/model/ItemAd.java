@@ -2,6 +2,9 @@ package com.pereira.classificados.database.model;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.database.Cursor;
+
+import com.pereira.classificados.database.MyStore;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,6 +19,13 @@ public class ItemAd implements Serializable{
     private String mImage;
     private String mTitle;
     private String mDescription;
+
+    public ItemAd(Cursor c){
+        //pegar informacao no banco
+        this.mTitle = c.getString(c.getColumnIndex(MyStore.ItemAdTable.TITLE));
+        this.mDescription = c.getString(c.getColumnIndex(MyStore.ItemAdTable.DESCRIPTION));
+
+    }
 
     public ItemAd(String mImage, String mTitle, String mDescription) {
         this.mImage = mImage;

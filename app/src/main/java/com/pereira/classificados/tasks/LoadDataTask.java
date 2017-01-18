@@ -1,12 +1,16 @@
 package com.pereira.classificados.tasks;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.TextView;
 
+import com.pereira.classificados.App;
 import com.pereira.classificados.R;
 import com.pereira.classificados.activity.BaseActivity;
 import com.pereira.classificados.adapter.ListAdapter;
+import com.pereira.classificados.database.MyStore;
 import com.pereira.classificados.database.model.ItemAd;
 
 import java.util.List;
@@ -45,23 +49,35 @@ public class LoadDataTask extends AsyncTask<Void, Integer,Boolean > {
             return false;
         }
 
-        for (int i = 1; i < 2; i++) {
+        //consumo do banco
+        SQLiteDatabase db = App.getInstance(mContext).getDbHelper().getReadableDatabase();
+        // quando usar o cursor, tem que fechar cursor.close()
+        // depois da api 19 ele fexha sozinho
+        try (
+            Cursor cursor = db.query(MyStore.ItemAdTable.TABLE_NAME,
+                    null, null, null, null, null, null);
+        ) {
+            int i = 0;
+            int count = cursor.getCount(); // qnts tem para percorrer
+            while (cursor.moveToNext()){
+                ItemAd item = new ItemAd(cursor);
+                mItems.add(item);
 
-            try {
-                Thread.sleep(1); // (simular busca de banco)
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                return false;
+                int progress = (i * 100) / count;
+                publishProgress(progress);
+
+                i++;
+
+                try {
+                    Thread.sleep(100); // (simular busca de banco)
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    return false;
+                }
             }
 
-            mItems.add(new ItemAd(null, String.format("Item %s", i), String.format("Descrição do meu item da minha lista "
-                    + "de Recycleview do Curso Android da PUCRS %s", i)));
-
-            int progress = (i * 100) / 50;
-            publishProgress(progress);
 
         }
-
         return true;
     }
 
