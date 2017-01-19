@@ -25,6 +25,15 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        //editar o banco
+        if(oldVersion == 1){
+            upgrade1to2(db);
+        }
+    }
 
+    private void upgrade1to2(SQLiteDatabase db){
+        db.execSQL("ALTER TABLE " + MyStore.ItemAdTable.TABLE_NAME
+                    + " ADD COLUMN " + MyStore.ItemAdTable.PRICE
+                    + " TEXT DEFAULT (0)");
     }
 }

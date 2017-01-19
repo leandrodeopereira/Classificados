@@ -10,6 +10,7 @@ import com.pereira.classificados.activity.FormItemActivity;
 import com.pereira.classificados.database.MyStore;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class ItemAd implements Serializable{
     private String mImage;
     private String mTitle;
     private String mDescription;
+    private BigDecimal mPrice;
     
 
     public ItemAd(Cursor c){
@@ -29,7 +31,8 @@ public class ItemAd implements Serializable{
         this.mGuid = c.getString(c.getColumnIndex(MyStore.ItemAdTable.GUID));
         this.mTitle = c.getString(c.getColumnIndex(MyStore.ItemAdTable.TITLE));
         this.mDescription = c.getString(c.getColumnIndex(MyStore.ItemAdTable.DESCRIPTION));
-
+        String price = c.getString(c.getColumnIndex(MyStore.ItemAdTable.PRICE));
+        this.mPrice = new BigDecimal(price != null ? price : "0");
     }
 
     public ItemAd(String mImage, String mTitle, String mDescription) {
@@ -90,5 +93,13 @@ public class ItemAd implements Serializable{
             }
         }
         return null; // caso nao encontre ninguem
+    }
+
+    public BigDecimal getPrice() {
+        return mPrice;
+    }
+
+    public void setPrice(BigDecimal mPrice) {
+        this.mPrice = mPrice;
     }
 }

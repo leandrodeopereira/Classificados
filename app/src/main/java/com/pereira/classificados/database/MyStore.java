@@ -18,12 +18,14 @@ public class MyStore {
 
         public static final String TITLE = "title";
         public static final String DESCRIPTION = "description";
+        public static final String PRICE = "price";
         // script para create table
         public static final String CREATE_TABLE =
                 "CREATE TABLE " + TABLE_NAME + " ( " +
                         GUID + " TEXT PRIMARY KEY," +
                         TITLE + " TEXT," +
-                        DESCRIPTION + " TEXT"
+                        DESCRIPTION + " TEXT, " +
+                        PRICE + " TEXT"
                  + " )";
     }
 
