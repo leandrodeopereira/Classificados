@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.database.Cursor;
 
+import com.pereira.classificados.activity.FormItemActivity;
 import com.pereira.classificados.database.MyStore;
 
 import java.io.Serializable;
@@ -15,13 +16,15 @@ import java.util.List;
  */
 
 public class ItemAd implements Serializable{
-
+    private String mGuid;
     private String mImage;
     private String mTitle;
     private String mDescription;
+    
 
     public ItemAd(Cursor c){
         //pegar informacao no banco
+        this.mGuid = c.getString(c.getColumnIndex(MyStore.ItemAdTable.GUID));
         this.mTitle = c.getString(c.getColumnIndex(MyStore.ItemAdTable.TITLE));
         this.mDescription = c.getString(c.getColumnIndex(MyStore.ItemAdTable.DESCRIPTION));
 
@@ -61,5 +64,17 @@ public class ItemAd implements Serializable{
         List<ItemAd> items = new ArrayList<>();
 
         return items;
+    }
+
+    public String getGuid() {
+        return mGuid;
+    }
+
+    public void setGuid(String mGuid) {
+        this.mGuid = mGuid;
+    }
+
+    public static ItemAd getByGuid(FormItemActivity formItemActivity) {
+        return null;
     }
 }
