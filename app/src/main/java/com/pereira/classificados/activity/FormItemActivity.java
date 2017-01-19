@@ -3,12 +3,17 @@ package com.pereira.classificados.activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pereira.classificados.App;
@@ -16,6 +21,10 @@ import com.pereira.classificados.R;
 import com.pereira.classificados.database.MyStore;
 import com.pereira.classificados.database.model.ItemAd;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -24,9 +33,12 @@ import java.util.UUID;
 
 public class FormItemActivity extends BaseActivity {
 
+    private static final int CAPTURE_REQUEST = 0;
+
     private EditText mEtTitle;
     private EditText mEtDescription;
     private EditText mEtPrice;
+    private ImageView mImImage;
 
     private ItemAd mItemAd;
 
@@ -67,6 +79,17 @@ public class FormItemActivity extends BaseActivity {
         mEtTitle = (EditText) findViewById(R.id.et_title);
         mEtDescription = (EditText) findViewById(R.id.et_description);
         mEtPrice = (EditText) findViewById(R.id.et_price);
+        mImImage = (ImageView) findViewById(R.id.iv_image);
+
+        mImImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if(intent.resolveActivity(getPackageManager()) != null){
+                    startActivityForResult(intent, CAPTURE_REQUEST);
+                }
+            }
+        });
     }
 
     public void save(View view) {
@@ -99,5 +122,34 @@ public class FormItemActivity extends BaseActivity {
         }
         // fecha a atual
         finish();
+    }
+
+    //desparar quando voltar da camera
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // gravou no diretorio de imagens do android
+        if(requestCode == CAPTURE_REQUEST && resultCode == RESULT_OK){
+            Bitmap btm = (Bitmap) data.getExtras().get("data");
+            if(btm == null) return;
+
+            String imageName = UUID.randomUUID().toString() + ".jpg";
+            File file = new File(getFilesDir().getAbsolutePath(),imageName);
+            FileOutputStream out = null;
+            try {
+                out = new FileOutputStream(file);
+                btm.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                out.flush();
+                out.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            // pegando a imagem
+            Bitmap btm2 = BitmapFactory.decodeFile(getFilesDir().getAbsolutePath() + "/"+ imageName);
+            mImImage.setImageBitmap(btm2);
+
+        }
     }
 }
