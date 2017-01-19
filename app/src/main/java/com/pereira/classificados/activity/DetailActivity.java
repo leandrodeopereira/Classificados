@@ -1,6 +1,7 @@
 package com.pereira.classificados.activity;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pereira.classificados.App;
 import com.pereira.classificados.R;
 import com.pereira.classificados.database.MyStore;
 import com.pereira.classificados.database.model.ItemAd;
@@ -21,6 +23,7 @@ import com.pereira.classificados.database.model.ItemAd;
 public class DetailActivity extends BaseActivity {
 
     public static final String ITEM_KEY= "ITEM_KEY";
+    private static final int EDIT_ITEM_REQUEST = 0;
 
     private ImageView mIvImage;
     private TextView mTvTitle;
@@ -38,6 +41,10 @@ public class DetailActivity extends BaseActivity {
         init();
 
         Intent intent = getIntent();
+        fillData(intent);
+    }
+
+    private void fillData(Intent intent){
         if(intent != null){
             mItemAd = (ItemAd) intent.getSerializableExtra(ITEM_KEY);
 
@@ -46,8 +53,16 @@ public class DetailActivity extends BaseActivity {
             mTvDescription.setText(mItemAd.getDescription());
             mTvTotal.setText(getString(R.string.total_label,"3.800,90"));
         }
+    }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // se eu fui na tela de edicao e cliquei em salvar
+        if(requestCode == EDIT_ITEM_REQUEST
+                && resultCode == RESULT_OK){
+            fillData(data);
+        }
     }
 
     private void init(){
@@ -84,7 +99,14 @@ public class DetailActivity extends BaseActivity {
             case R.id.action_edit:
                 Intent intent = new Intent(this, FormItemActivity.class);
                 intent.putExtra(MyStore.ItemAdTable.GUID, mItemAd.getGuid());
-                startActivity(intent);
+                startActivityForResult(intent, EDIT_ITEM_REQUEST); //para retornar a activity com o resultado
+                break;
+
+            case R.id.action_delete:
+                SQLiteDatabase db = App.getInstance(this).getDbHelper().getWritableDatabase();
+                db.delete(MyStore.ItemAdTable.TABLE_NAME,
+                        MyStore.ItemAdTable.GUID + " = ?", new String[]{mItemAd.getGuid()});
+                finish();
                 break;
         }
 

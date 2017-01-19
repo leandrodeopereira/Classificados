@@ -46,10 +46,11 @@ public class FormItemActivity extends BaseActivity {
         Intent intent = getIntent();
         if (intent != null){
             String itemGuid = intent.getStringExtra(MyStore.ItemAdTable.GUID);
-            Log.d(TAG, itemGuid);
+
             //pegar o objeto a partir da guid dele
-            mItemAd = ItemAd.getByGuid(this);
+            mItemAd = ItemAd.getByGuid(this, itemGuid);
             if(mItemAd != null){
+                Log.d(TAG, itemGuid);
                 getSupportActionBar().setTitle(mItemAd.getTitle());
 
                 mEtTitle.setText(mItemAd.getTitle());
@@ -81,6 +82,13 @@ public class FormItemActivity extends BaseActivity {
             // comeca uma nova
             startActivity(new Intent(this, FormItemActivity.class));
         } else {
+            db.update(MyStore.ItemAdTable.TABLE_NAME, values,
+                    MyStore.ItemAdTable.GUID + " = ?"/*proximo parametro*/, new String[]{mItemAd.getGuid()});
+            ItemAd itemAd = ItemAd.getByGuid(this, mItemAd.getGuid());
+            //retornando de parametro e depois ir em action edit em detail
+            Intent intent = new Intent();
+            intent.putExtra(DetailActivity.ITEM_KEY, itemAd);
+            setResult(RESULT_OK, intent);
 
         }
         // fecha a atual
