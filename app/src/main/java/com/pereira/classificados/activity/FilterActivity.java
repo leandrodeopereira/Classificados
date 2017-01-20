@@ -7,6 +7,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.pereira.classificados.R;
 import com.pereira.classificados.database.model.Category;
 
@@ -17,7 +24,7 @@ import java.util.List;
  * Created by Aluno on 11/01/2017.
  */
 
-public class FilterActivity extends BaseActivity {
+public class FilterActivity extends BaseActivity implements OnMapReadyCallback {
 
     public static final String CATEGORY_KEY = "CATEGORY_KEY";
 
@@ -49,6 +56,23 @@ public class FilterActivity extends BaseActivity {
                 }
             }
         }
+
+        SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        supportMapFragment.getMapAsync(this);
+
+
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        // adicionando marcador em sidney e movendo a camera para la
+        LatLng sydney = new LatLng(-34,151);
+
+        MarkerOptions marker = new MarkerOptions().position(sydney).title("Marker in Sydney");
+        googleMap.addMarker(marker);
+
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        googleMap.setMinZoomPreference(10);
     }
 
     private void init(){
@@ -95,6 +119,4 @@ public class FilterActivity extends BaseActivity {
     public void save(View view) {
         mText = "Meu texto";
     }
-
-
 }

@@ -40,6 +40,12 @@
         </service>
 
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCRXEIO6qGLRzFepc-X103kI7nVIWHX4DA">
+        </meta-data>
+
+
     </application>
 
 </manifest>
