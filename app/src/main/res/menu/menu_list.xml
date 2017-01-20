@@ -44,4 +44,11 @@
         app:showAsAction='never'
         />
 
+    <item
+        android:id="@+id/action_request_contacts"
+        android:icon="@mipmap/ic_launcher"
+        android:title="@string/contacts"
+        app:showAsAction='never'
+        />
+
 </menu>

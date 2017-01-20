@@ -27,5 +27,6 @@
     <string name="edit">Editar</string>
     <string name="no_data">Nenhum dado encontrado.</string>
     <string name="delete">Deletar</string>
+    <string name="contacts">Contacts</string>
     <!-- formatted="false" quando o %s não é string -->
 </resources>

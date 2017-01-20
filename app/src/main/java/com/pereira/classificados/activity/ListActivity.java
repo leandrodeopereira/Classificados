@@ -5,9 +5,11 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -19,6 +21,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -171,9 +174,40 @@ public class ListActivity extends BaseActivity {
            case R.id.action_request_sms:
                 requestSMS();
                 break;
+
+           case R.id.action_request_contacts:
+               requestContacts();
+               break;
         }
         // retorna para fazer o metodo da BaseActivity
         return super.onOptionsItemSelected(item);
+    }
+
+    private void requestContacts() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
+                == PackageManager.PERMISSION_DENIED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS)
+                        == PackageManager.PERMISSION_DENIED ) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)
+                    && !ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_CONTACTS)) {
+                String[] permissions = new String[]{
+                        Manifest.permission.READ_CONTACTS,
+                        Manifest.permission.WRITE_CONTACTS};
+                ActivityCompat.requestPermissions(this, permissions, 99 );
+            } else {// se ele jah negou, avisar para ele ativar
+                try (
+                Cursor c = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,
+                        null, null, null, null)
+                ) {
+                    while (c.moveToNext()){
+                        String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                        String id = c.getString(c.getColumnIndex(ContactsContract.Contacts._ID));
+
+                        Log.d(TAG, String.format("Nome: %s - ID: %s",name, id));
+                    }
+                }
+            }
+        }
     }
 
     // como é uma permicao perigosa, precisa fazer uma verificacao antes
