@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,12 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.pereira.classificados.R;
 import com.pereira.classificados.activity.BaseActivity;
 import com.pereira.classificados.activity.FilterActivity;
@@ -23,6 +30,10 @@ import com.pereira.classificados.activity.ListActivity;
 import com.pereira.classificados.adapter.ListAdapter;
 import com.pereira.classificados.database.model.ItemAd;
 import com.pereira.classificados.tasks.LoadDataTask;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +54,9 @@ public class ListFragment extends Fragment {
     private TextView mTvProgress;
     private Button mBtnFilter;
     private FloatingActionButton mBtnAdd;
+    //iniciando com volley
+    private RequestQueue mRequestQueue;
+
 
     private boolean mIsLocal;
 
@@ -65,6 +79,9 @@ public class ListFragment extends Fragment {
                 new AddItemTask().execute("Novo item");
             }
         });
+
+        // criada a fila do volley
+        this.mRequestQueue = Volley.newRequestQueue(getActivity());
 
         loadData();
         //botao de filtar em fragment tem que ser via codigo java
@@ -109,7 +126,40 @@ public class ListFragment extends Fragment {
     }
 
     private void loadServerData(){
+        // vai criar a nossa requisao pra buscar os dados
+        StringRequest request = new StringRequest(
+                Request.Method.POST,
+                "http://orbisxp.com/api/list_items",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("VOLLEY", response);
 
+                        try {
+                            JSONArray jsonArray = new JSONArray(response);
+                            for (int i = 0; i<jsonArray.length();i++){
+                                JSONObject json = jsonArray.getJSONObject(i);
+
+                                ItemAd item = new ItemAd(json);
+                                mItems.add(item);
+                            }
+                            mAdapter.notifyDataSetChanged();
+                            ((BaseActivity) getActivity()).replaceView(mSpinner,mRvList);
+                            ((BaseActivity) getActivity()).hideView(mTvProgress);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                }, new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("VOLLEY", error.getMessage());
+                    }
+                });
+        mRequestQueue.add(request);
     }
 
     public void filter() {

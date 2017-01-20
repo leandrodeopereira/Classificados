@@ -9,6 +9,9 @@ import com.pereira.classificados.App;
 import com.pereira.classificados.activity.FormItemActivity;
 import com.pereira.classificados.database.MyStore;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -32,6 +35,13 @@ public class ItemAd implements Serializable{
         this.mTitle = c.getString(c.getColumnIndex(MyStore.ItemAdTable.TITLE));
         this.mDescription = c.getString(c.getColumnIndex(MyStore.ItemAdTable.DESCRIPTION));
         String price = c.getString(c.getColumnIndex(MyStore.ItemAdTable.PRICE));
+        this.mPrice = new BigDecimal(price != null ? price : "0");
+    }
+
+    public ItemAd(JSONObject json) throws JSONException {
+        this.mTitle = json.getString("title");
+        this.mDescription = json.getString("description");
+        String price = json.getString("price");
         this.mPrice = new BigDecimal(price != null ? price : "0");
     }
 

@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.pereira.classificados.App;
 import com.pereira.classificados.R;
 import com.pereira.classificados.activity.BaseActivity;
@@ -37,6 +39,7 @@ public class LoadDataTask extends AsyncTask<Void, Integer,Boolean > {
         this.mSpinner = mSpinner;
         this.mRvList = mRvList;
         this.mTvProgress = mTvProgress;
+
     }
 
     @Override
