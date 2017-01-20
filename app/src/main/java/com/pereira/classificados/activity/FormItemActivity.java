@@ -1,5 +1,6 @@
 package com.pereira.classificados.activity;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -42,6 +43,8 @@ public class FormItemActivity extends BaseActivity {
 
     private ItemAd mItemAd;
 
+    private boolean mIsLocal;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,19 +62,19 @@ public class FormItemActivity extends BaseActivity {
         Intent intent = getIntent();
         if (intent != null){
             String itemGuid = intent.getStringExtra(MyStore.ItemAdTable.GUID);
+            if (mIsLocal) {
+                //pegar o objeto a partir da guid dele
+                mItemAd = ItemAd.getByGuid(this, itemGuid);
+                if (mItemAd != null) {
+                    Log.d(TAG, itemGuid);
+                    getSupportActionBar().setTitle(mItemAd.getTitle());
 
-            //pegar o objeto a partir da guid dele
-            mItemAd = ItemAd.getByGuid(this, itemGuid);
-            if(mItemAd != null){
-                Log.d(TAG, itemGuid);
-                getSupportActionBar().setTitle(mItemAd.getTitle());
+                    mEtTitle.setText(mItemAd.getTitle());
+                    mEtDescription.setText(mItemAd.getDescription());
+                    mEtPrice.setText(mItemAd.getPrice().toString());
 
-                mEtTitle.setText(mItemAd.getTitle());
-                mEtDescription.setText(mItemAd.getDescription());
-                mEtPrice.setText(mItemAd.getPrice().toString());
-
+                }
             }
-
         }
     }
 
@@ -98,30 +101,41 @@ public class FormItemActivity extends BaseActivity {
         String description = mEtDescription.getText().toString();
         String price = mEtPrice.getText().toString();
 
-        ContentValues values = new ContentValues();
-        values.put(MyStore.ItemAdTable.TITLE, title);
-        values.put(MyStore.ItemAdTable.DESCRIPTION, description);
-        values.put(MyStore.ItemAdTable.PRICE, price);
+        if(mIsLocal) {
+            ContentValues values = new ContentValues();
+            values.put(MyStore.ItemAdTable.TITLE, title);
+            values.put(MyStore.ItemAdTable.DESCRIPTION, description);
+            values.put(MyStore.ItemAdTable.PRICE, price);
 
-        SQLiteDatabase db = App.getInstance(this).getDbHelper().getWritableDatabase();
-        // estou criando um novo
-        if(mItemAd == null){
-            values.put(MyStore.ItemAdTable.GUID, UUID.randomUUID().toString());
-            db.insert(MyStore.ItemAdTable.TABLE_NAME, null, values);
-            // comeca uma nova
-            startActivity(new Intent(this, FormItemActivity.class));
+            SQLiteDatabase db = App.getInstance(this).getDbHelper().getWritableDatabase();
+            // estou criando um novo
+            if (mItemAd == null) {
+                values.put(MyStore.ItemAdTable.GUID, UUID.randomUUID().toString());
+                db.insert(MyStore.ItemAdTable.TABLE_NAME, null, values);
+                // comeca uma nova
+                startActivity(new Intent(this, FormItemActivity.class));
+            } else {
+                db.update(MyStore.ItemAdTable.TABLE_NAME, values,
+                        MyStore.ItemAdTable.GUID + " = ?"/*proximo parametro*/, new String[]{mItemAd.getGuid()});
+                ItemAd itemAd = ItemAd.getByGuid(this, mItemAd.getGuid());
+                //retornando de parametro e depois ir em action edit em detail
+                Intent intent = new Intent();
+                intent.putExtra(DetailActivity.ITEM_KEY, itemAd);
+                setResult(RESULT_OK, intent);
+
+            }
+            // fecha a atual
+            finish();
         } else {
-            db.update(MyStore.ItemAdTable.TABLE_NAME, values,
-                    MyStore.ItemAdTable.GUID + " = ?"/*proximo parametro*/, new String[]{mItemAd.getGuid()});
-            ItemAd itemAd = ItemAd.getByGuid(this, mItemAd.getGuid());
-            //retornando de parametro e depois ir em action edit em detail
-            Intent intent = new Intent();
-            intent.putExtra(DetailActivity.ITEM_KEY, itemAd);
-            setResult(RESULT_OK, intent);
-
+            saveServerData(title, description);
         }
-        // fecha a atual
-        finish();
+    }
+
+    private void saveServerData(String title, String description) {
+        ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setMessage("Salvando...");
+        dialog.setCancelable(true);
+        dialog.show();
     }
 
     //desparar quando voltar da camera

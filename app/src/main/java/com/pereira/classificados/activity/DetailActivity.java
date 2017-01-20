@@ -32,6 +32,8 @@ public class DetailActivity extends BaseActivity {
 
     private ItemAd mItemAd;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -10,8 +10,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
@@ -26,10 +28,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pereira.classificados.adapter.TabAdapter;
 import com.pereira.classificados.database.model.Category;
 import com.pereira.classificados.database.model.ItemAd;
 import com.pereira.classificados.adapter.ListAdapter;
 import com.pereira.classificados.R;
+import com.pereira.classificados.fragment.ListFragment;
 import com.pereira.classificados.reciver.AlarmBroadcastReceiver;
 import com.pereira.classificados.tasks.LoadDataTask;
 
@@ -46,13 +50,9 @@ public class ListActivity extends BaseActivity {
     private final int REQUEST_PERMISSION_CALL_PHONE = 0;
     private final int REQUEST_PERMISSION_SMS = 1;
 
-    private RecyclerView mRvList;
-    private ListAdapter mAdapter;
-    private List<ItemAd> mItems;
-    private ProgressBar mSpinner;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    private TextView mTvProgress;
-
+    private TabLayout mTabLayout;
+    private ViewPager mViewPager;
+    private TabAdapter mTabAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,30 +61,26 @@ public class ListActivity extends BaseActivity {
         setContentView(R.layout.activity_list);
         setupToolbar(R.string.list_activity_title); // settando a toolbar
         init();
-        mItems = new ArrayList<>();
-        mAdapter = new ListAdapter(this, mItems);
-        mRvList.setAdapter(mAdapter);
 
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new AddItemTask().execute("Novo item");
-            }
-        });
+        mTabAdapter = new TabAdapter(getSupportFragmentManager());
+
+        ListFragment fragment = new ListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(ListFragment.IS_LOCAL, true);
+        fragment.setArguments(bundle);
+        mTabAdapter.add("Local", fragment);
+
+        fragment = new ListFragment();
+        bundle = new Bundle();
+        bundle.putBoolean(ListFragment.IS_LOCAL, false);
+        fragment.setArguments(bundle);
+        mTabAdapter.add("Server", fragment);
+
+        mViewPager.setAdapter(mTabAdapter);
+        mTabLayout.setupWithViewPager(mViewPager);
+
         createAlarm();
-
-        loadData();
-
     }
-
-    private void loadData(){
-        mRvList.setVisibility(View.INVISIBLE);
-        mSpinner.setVisibility(View.VISIBLE);
-        mItems.clear();
-        LoadDataTask loadDataTask = new LoadDataTask(mItems, mAdapter,this, mSpinner,mRvList, mTvProgress);
-        loadDataTask.execute();
-    }
-
 
     @Override
     protected void setupToolbar(int title) {
@@ -104,10 +100,8 @@ public class ListActivity extends BaseActivity {
     }
 
     private void init() {
-        mRvList = (RecyclerView) findViewById(R.id.rv_list);
-        mSpinner = (ProgressBar) findViewById(R.id.spinner);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefresh);
-        mTvProgress = (TextView) findViewById(R.id.tv_progress);
+        mTabLayout =(TabLayout) findViewById(R.id.tab_layout);
+        mViewPager = (ViewPager) findViewById(R.id.view_pager);
     }
 
     @Override
@@ -118,17 +112,18 @@ public class ListActivity extends BaseActivity {
         Toast.makeText(this, category.getDescription(),Toast.LENGTH_SHORT).show();
     }
 
+    private void loadData(){
+        mTabAdapter.loadData();
+    }
+
     @Override
     protected void onRestart() {
         super.onRestart();
         // o certo é usar o Load Manager, atualizar o banco de dados -> atualiza a tela
-
         loadData();
     }
 
-    public void filter(View view) {
-        startActivityForResult(new Intent(this, FilterActivity.class), 0);
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -141,14 +136,14 @@ public class ListActivity extends BaseActivity {
         //necessario baixar o pacote design do google para as opcoes do toolbar
         switch (item.getItemId()){
             case R.id.change_view:
-                if (mRvList.getLayoutManager() instanceof GridLayoutManager){
-                    mRvList.setLayoutManager(new LinearLayoutManager(this));
-                } else {
-                    mRvList.setLayoutManager(new GridLayoutManager(this, 2));
-                }
-                // animacao de troca de visualizacao
-                mRvList.getAdapter().notifyItemRangeChanged(0, mRvList.getAdapter().getItemCount());
-                break;
+//                if (mRvList.getLayoutManager() instanceof GridLayoutManager){
+//                    mRvList.setLayoutManager(new LinearLayoutManager(this));
+//                } else {
+//                    mRvList.setLayoutManager(new GridLayoutManager(this, 2));
+//                }
+//                // animacao de troca de visualizacao
+//                mRvList.getAdapter().notifyItemRangeChanged(0, mRvList.getAdapter().getItemCount());
+//                break;
 
             case R.id.action_toast:
                 Toast.makeText(this, R.string.show_toast, Toast.LENGTH_SHORT).show();
@@ -258,35 +253,5 @@ public class ListActivity extends BaseActivity {
         alarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(), 60000, pendingIntent);
     }
 
-    public void newItem(View view) {
-        startActivity(new Intent(this, FormItemActivity.class));
-    }
 
-    class AddItemTask extends AsyncTask<String, Void, Boolean>{
-
-        @Override
-        protected Boolean doInBackground(String... strings) {
-            try {
-                Thread.sleep(2* 1000); // 2 seg
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                return false;
-            }
-
-            String title = strings[0];
-
-            mItems.add(0, new ItemAd(null, title , "Minha descrição" +
-                    "do meu item adicionado da minha aplicação"));
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean sucess) {
-            super.onPostExecute(sucess);
-            if (sucess) {
-                mAdapter.notifyItemRangeChanged(0, mItems.size());
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-        }
-    }
 }
