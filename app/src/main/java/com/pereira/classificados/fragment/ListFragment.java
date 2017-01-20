@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -39,6 +41,9 @@ public class ListFragment extends Fragment {
     private ProgressBar mSpinner;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView mTvProgress;
+    private Button mBtnFilter;
+    private FloatingActionButton mBtnAdd;
+
     private boolean mIsLocal;
 
     @Nullable
@@ -62,6 +67,20 @@ public class ListFragment extends Fragment {
         });
 
         loadData();
+        //botao de filtar em fragment tem que ser via codigo java
+        mBtnFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                filter();
+            }
+        });
+
+        mBtnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                newItem();
+            }
+        });
 
         return view;
     }
@@ -71,6 +90,8 @@ public class ListFragment extends Fragment {
         mSpinner = (ProgressBar) view.findViewById(R.id.spinner);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefresh);
         mTvProgress = (TextView) view.findViewById(R.id.tv_progress);
+        mBtnFilter = (Button) view.findViewById(R.id.btn_filter);
+        mBtnAdd = (FloatingActionButton) view.findViewById(R.id.btn_add);
     }
 
     public void loadData(){
@@ -124,6 +145,8 @@ public class ListFragment extends Fragment {
     }
 
     public void newItem() {
-        startActivity(new Intent(getActivity(), FormItemActivity.class));
+        Intent intent = new Intent(getActivity(), FormItemActivity.class);
+        intent.putExtra(IS_LOCAL, mIsLocal);
+        startActivity(intent);
     }
 }
